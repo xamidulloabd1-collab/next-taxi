@@ -1,0 +1,20 @@
+{
+  "name": "NEXT TAXI",
+  "short_name": "NEXT TAXI",
+  "description": "G‘uzorda taksi chaqirish: narx oldindan, haydovchi xaritada.",
+  "lang": "uz",
+  "start_url": "/passenger",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F8FAFC",
+  "theme_color": "#0B1220",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Haydovchi rejimi", "url": "/driver", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

@@ -1,0 +1,38 @@
+# Local development stack: PostgreSQL 16 + PostGIS 3.4, and optionally the app container.
+#   docker compose up -d db            # database only (run the app with `npm run dev`)
+#   docker compose --profile app up    # database + production-mode app on :3000
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: nexttaxi
+      POSTGRES_PASSWORD: nexttaxi_dev
+      POSTGRES_DB: nexttaxi
+    # Host port: change DB_PORT (e.g. DB_PORT=5433 in .env) if 5432 is taken, and use the same port in DATABASE_URL.
+    ports: ["${DB_PORT:-5432}:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nexttaxi"]
+      interval: 5s
+      retries: 10
+
+  app:
+    profiles: ["app"]
+    build: .
+    depends_on:
+      db: { condition: service_healthy }
+    ports: ["3000:3000"]
+    environment:
+      DATABASE_URL: postgresql://nexttaxi:nexttaxi_dev@db:5432/nexttaxi?schema=public
+      APP_ENV: staging
+      APP_URL: http://localhost:3000
+      AUTH_SECRET: docker-local-only-secret-0123456789abcdef
+      SMS_PROVIDER: console
+      OTP_DEV_ECHO: "true"
+      ROUTING_PROVIDER: estimate
+      DISPATCH_WORKER: inline
+    volumes: [docs:/app/storage/private]
+
+volumes:
+  pgdata:
+  docs:

@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_USER: nexttaxi
+          POSTGRES_PASSWORD: nexttaxi_dev
+          POSTGRES_DB: nexttaxi_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U nexttaxi" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql://nexttaxi:nexttaxi_dev@localhost:5432/nexttaxi_test?schema=public
+      E2E_DATABASE_URL: postgresql://nexttaxi:nexttaxi_dev@localhost:5432/nexttaxi_e2e?schema=public
+      DATABASE_URL: postgresql://nexttaxi:nexttaxi_dev@localhost:5432/nexttaxi_test?schema=public
+      AUTH_SECRET: ci-only-secret-0123456789abcdef0123456789
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx prisma generate
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Lint
+        run: npm run lint
+      - name: Unit + integration tests (PostgreSQL/PostGIS)
+        run: npm test
+      - name: Production build
+        run: npx next build
+      - name: End-to-end acceptance test (production build, APP_ENV=staging)
+        run: npm run test:e2e

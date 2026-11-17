@@ -1,0 +1,16 @@
+node_modules/
+.next/
+out/
+.env
+.env.local
+.env.*.local
+storage/*
+!storage/private/
+storage/private/*
+!storage/private/.gitkeep
+coverage/
+playwright-report/
+test-results/
+*.tsbuildinfo
+next-env.d.ts
+NEXT-TAXI-MVP.zip

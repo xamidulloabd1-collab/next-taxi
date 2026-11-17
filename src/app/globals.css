@@ -1,0 +1,132 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* NEXT TAXI design tokens — brand: ink #0B1220, signal green #16A34A, mist #F8FAFC. */
+:root {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-2: #f1f5f9;
+  --fg: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --primary: #0b1220;
+  --primary-fg: #f8fafc;
+  --accent: #16a34a;
+  --accent-soft: #dcfce7;
+  --accent-fg: #ffffff;
+  --warn: #b45309;
+  --warn-soft: #fef3c7;
+  --danger: #dc2626;
+  --danger-soft: #fee2e2;
+  --ring: #16a34a;
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0b1220;
+  --surface: #121b2e;
+  --surface-2: #1a2540;
+  --fg: #e5edf7;
+  --muted: #94a3b8;
+  --border: #22304d;
+  --primary: #f8fafc;
+  --primary-fg: #0b1220;
+  --accent: #22c55e;
+  --accent-soft: #14321f;
+  --accent-fg: #04210f;
+  --warn: #f59e0b;
+  --warn-soft: #3a2a0a;
+  --danger: #f87171;
+  --danger-soft: #3b1414;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-fg);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-fg: var(--accent-fg);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-ink: #0b1220;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Roboto Mono", Menlo, Consolas, monospace;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  min-height: 100dvh;
+  text-rendering: optimizeLegibility;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 0.75rem);
+}
+
+/* MapLibre: keep attribution readable but small; controls match surfaces. */
+.maplibregl-ctrl-attrib {
+  font-size: 10px;
+}
+.maplibregl-ctrl-group {
+  border-radius: 12px !important;
+}
+
+/* Searching pulse around the pickup marker. */
+@keyframes nt-pulse {
+  0% { transform: scale(0.6); opacity: 0.55; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+.nt-pulse {
+  animation: nt-pulse 1.8s ease-out infinite;
+}
+
+/* Offer countdown bar drains linearly over the offer timeout. */
+@keyframes nt-drain {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+@keyframes nt-rise {
+  from { transform: translateY(12px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.nt-rise {
+  animation: nt-rise 220ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nt-pulse,
+  .nt-rise {
+    animation: none;
+  }
+  * {
+    transition-duration: 0ms !important;
+  }
+}
